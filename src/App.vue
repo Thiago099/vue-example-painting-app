@@ -13,10 +13,23 @@
       Your browser does not support the HTML canvas tag.</canvas>
       <div class="form-group col-2">
         <label> Color:</label>
-        <input class="col-12 form-control" type="color" @change="color = $event.target.value">
+        <input class="col-12 form-control" type="color" v-model="color" @change="updateColor($event.target.value)">
         <label> Size:</label>
-        <input class="col-12 form-control" type="range" min="1" max="100" value="50" @change="size = $event.target.value">
+        <input class="col-12" type="range" min="1" max="300" value="50" v-model="size">
+        <button class="form-control" @click="fill">Fill</button>
+        <div class="row color-container">
+         <div 
+          v-for="(item, index) in color_history" 
+          :key="item" 
+          class="color-box col-3"
+          :style="`background-color:${item};`"
+          @click.left="updateColor(item)"
+          @click.prevent.right="deleteColor(index)"
+          >
+        </div>
+        </div>
       </div>
+       
     </div>
 
   </div>
@@ -32,8 +45,10 @@ export default {
       previous_mouse:null,
       canvas:null,
       ctx:null,
+      opacity:1,
       color:'#000000',
-      size:50
+      size:50,
+      color_history : [],
     }
   },
   mounted () {
@@ -44,7 +59,8 @@ export default {
       window.onresize = this.resizeCanvas;
   },
   methods:{
-    resizeCanvas(){
+    resizeCanvas()
+    {
       this.canvas.width = this.canvas.clientWidth
     },
     draw (event) {
@@ -54,6 +70,7 @@ export default {
         this.mouse = this.getMousePos(event)
         if(this.previous_mouse == null)
         return;
+        // set red background
         this.ctx.beginPath();
         this.ctx.strokeStyle = this.color;
         this.ctx.lineWidth = this.size;
@@ -64,17 +81,44 @@ export default {
         this.ctx.stroke();
       }
     },
-    getMousePos(event) {
-        var rect = this.canvas.getBoundingClientRect();
-        return {
-          x: event.clientX - rect.left,
-          y: event.clientY - rect.top
-        };
-      },
+    getMousePos(event) 
+    {
+      var rect = this.canvas.getBoundingClientRect();
+      return {
+        x: event.clientX - rect.left,
+        y: event.clientY - rect.top
+      };
+    },
+    updateColor(value)
+    {
+      if(this.color_history.indexOf(value) == -1)
+      {
+        this.color_history.push(value)
+      }
+      this.color = value
+    },
+    deleteColor(index)
+    {
+      this.color_history.splice(index,1)
+    },
+    fill(){
+      this.ctx.fillStyle = this.color;
+      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
     }
-  }
+  },
+}
 </script>
 
 <style>
-
+.color-box{
+  height:30px;
+  width:30px;
+  cursor:pointer;
+  margin: 3px;
+  border: 1px solid black;
+  border-radius: 3px;
+}
+.color-container{
+  padding:10px;
+}
 </style>
