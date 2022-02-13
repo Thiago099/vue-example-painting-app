@@ -22,7 +22,7 @@
           v-for="(item, index) in color_history" 
           :key="item" 
           class="color-box col-3"
-          :style="`background-color:${item};`"
+          :style="`background-color:${item};${item == color? 'border-color:red':''}`"
           @click.left="updateColor(item)"
           @click.prevent.right="deleteColor(index)"
           >
@@ -117,6 +117,9 @@ export default {
   margin: 3px;
   border: 1px solid black;
   border-radius: 3px;
+}
+.color-box-active{
+  border: 1px solid v-bind(color);
 }
 .color-container{
   padding:10px;
