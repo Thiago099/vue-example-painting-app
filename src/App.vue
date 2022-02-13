@@ -5,7 +5,7 @@
           class="col-10"
           ref='canvas' 
           height="800" 
-          style="border:1px solid #d3d3d3;"
+          style="border:1px solid #d3d3d3;padding:0px"
           @mousedown.prevent="mousedown = true; mouse=null"
           @mouseup="mousedown = false"
           @mousemove="draw"
@@ -54,7 +54,6 @@ export default {
         this.mouse = this.getMousePos(event)
         if(this.previous_mouse == null)
         return;
-        // ctx.clearRect(0, 0, canvas.width, canvas.height);
         this.ctx.beginPath();
         this.ctx.strokeStyle = this.color;
         this.ctx.lineWidth = this.size;
@@ -63,8 +62,6 @@ export default {
         this.ctx.lineTo(this.mouse.x, this.mouse.y);
         this.ctx.closePath();
         this.ctx.stroke();
-
-        // draw line from previous mouse to mouse
       }
     },
     getMousePos(event) {
